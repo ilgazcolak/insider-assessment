@@ -4,6 +4,8 @@ type Statistics struct {
 	Id                 int     `json:"id"`
 	PlayerId           int     `json:"player_id"`
 	PlayerName         string  `json:"player_name"`
+	TeamName           string  `json:"team_name"`
+	Position           string  `json:"position"`
 	Score              int     `json:"score"`
 	MatchId            int     `json:"match_id"`
 	AttemptCount       int     `json:"attempt_count"`

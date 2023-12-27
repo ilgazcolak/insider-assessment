@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/ilgazcolak/insider-assessment/internal/database"
 	"github.com/ilgazcolak/insider-assessment/internal/repository"
 	"github.com/ilgazcolak/insider-assessment/pkg/models"
@@ -39,6 +40,13 @@ func main() {
 	initialize(matchService, teamService, playerService)
 
 	matchCount := len(*MatchList)
+
+	app := fiber.New()
+
+	app.Get("/api/v1/stats", func(c *fiber.Ctx) error {
+		stats, _ := statisticsService.GetAll(PlayerMap)
+		return c.JSON(stats)
+	})
 
 	var wg sync.WaitGroup
 
@@ -110,6 +118,12 @@ func main() {
 						fmt.Println(err)
 					}
 					stats.Assist++
+
+					err = statisticsRepository.Update(stats)
+
+					if err != nil {
+						fmt.Println(err)
+					}
 				}
 
 				time.Sleep(time.Second * time.Duration(RoundTime))
@@ -119,6 +133,7 @@ func main() {
 		}(match)
 	}
 
+	app.Listen(":8080")
 	wg.Wait()
 }
 

@@ -23,17 +23,17 @@ func NewStatisticsRepository(db *sql.DB) StatisticsRepository {
 
 func (r *statisticsRepository) Get(playerId int, matchId int) (entities.Statistics, error) {
 	var s entities.Statistics
-	query := "select * from statistics where player_id=$1 and match_id=$2"
+	query := "select s.*, t.name, p.position from statistics s join players p on s.player_id = p.id join teams t on t.id = p.team_id where player_id=$1 and match_id=$2"
 
 	row := r.Db.QueryRow(query, playerId, matchId)
 
-	err := row.Scan(&s.Id, &s.PlayerId, &s.MatchId, &s.Score, &s.AttemptCount, &s.TwoPointsAttempt, &s.ThreePointsAttempt, &s.TwoPointsSuccess, &s.ThreePointsSuccess, &s.Assist)
+	err := row.Scan(&s.Id, &s.PlayerId, &s.MatchId, &s.Score, &s.AttemptCount, &s.TwoPointsAttempt, &s.ThreePointsAttempt, &s.TwoPointsSuccess, &s.ThreePointsSuccess, &s.Assist, &s.TeamName, &s.Position)
 
 	return s, err
 }
 
 func (r *statisticsRepository) GetAll() ([]entities.Statistics, error) {
-	query := "select * from statistics"
+	query := "select s.*, t.name, p.position from statistics s join players p on s.player_id = p.id join teams t on t.id = p.team_id"
 
 	rows, err := r.Db.Query(query)
 
@@ -46,7 +46,7 @@ func (r *statisticsRepository) GetAll() ([]entities.Statistics, error) {
 	for rows.Next() {
 		var s entities.Statistics
 
-		err := rows.Scan(&s.Id, &s.PlayerId, &s.MatchId, &s.Score, &s.AttemptCount, &s.TwoPointsAttempt, &s.ThreePointsAttempt, &s.TwoPointsSuccess, &s.ThreePointsSuccess, &s.Assist)
+		err := rows.Scan(&s.Id, &s.PlayerId, &s.MatchId, &s.Score, &s.AttemptCount, &s.TwoPointsAttempt, &s.ThreePointsAttempt, &s.TwoPointsSuccess, &s.ThreePointsSuccess, &s.Assist, &s.TeamName, &s.Position)
 
 		if err != nil {
 			return nil, err

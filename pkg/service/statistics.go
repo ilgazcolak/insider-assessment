@@ -13,7 +13,7 @@ type statisticsService struct {
 
 type StatisticsService interface {
 	Get(playerId int, matchId int) (models.Statistics, error)
-	GetAll(map[int]string) (*[]models.Statistics, error)
+	GetAll(playerMap map[int]string) (*[]models.Statistics, error)
 	Update(models.Statistics) error
 }
 
@@ -67,6 +67,8 @@ func (s *statisticsService) GetAll(playerMap map[int]string) (*[]models.Statisti
 		statistic.PlayerName = playerMap[ss.PlayerId]
 		statistic.MatchId = ss.MatchId
 		statistic.Score = ss.Score
+		statistic.Position = ss.Position
+		statistic.TeamName = ss.TeamName
 		statistic.AttemptCount = ss.AttemptCount
 		statistic.TwoPointsAttempt = ss.TwoPointsAttempt
 		statistic.ThreePointsAttempt = ss.ThreePointsAttempt
